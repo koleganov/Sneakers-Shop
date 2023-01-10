@@ -1,4 +1,4 @@
-import Card from "./components/ Card";
+import Card from "./components/Card";
 import Header from "./components/Header";
 import Drawer from "./components/Drawer";
 
@@ -27,7 +27,7 @@ function App() {
         <div className="sneakers d-flex">
           {
             arr.map(obj => (
-              <Card title={obj.name} price={obj.price} imageUrl={obj.imageUrl} />
+              <Card title={obj.name} price={obj.price} imageUrl={obj.imageUrl} onClick={() => console.log(obj)} />
             ))
           }
         </div>
