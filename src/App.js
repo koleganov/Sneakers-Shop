@@ -5,21 +5,26 @@ import Drawer from "./components/Drawer";
 
 function App() {
   const [items, setItems] = React.useState([]);
+  const [cartItems, setCartItems] = React.useState([]);
   const [cartOpened, setCartOpened] = React.useState(false);
 
   React.useEffect(() => {
-    fetch("https://63beb15cf5cfc0949b5e5d43.mockapi.io/items")
-      .then((response) => {
-        return response.json();
+    fetch('https://63beb15cf5cfc0949b5e5d43.mockapi.io/items') // отправили запрос на бэкэнд (на сервер)
+      .then((res) => {                                          // превратили ответ в JSON
+        return res.json();  
       })
-      .then((json) => {
-        setItems(json);
+      .then((json) => {                                 // вытаскиваем его из этой переменной
+        setItems(json);                                 // и передаем в массив useState
       });
   }, []);
 
+  const onAddToCart = (obj) => {
+    setCartItems([...cartItems, obj])
+  }
+
   return (
     <div className="wrapper clear">
-      {cartOpened && <Drawer onClose={() => setCartOpened(false)} />}
+      {cartOpened && <Drawer items={cartItems} onClose={() => setCartOpened(false)} />}
       <Header onClickCart={() => setCartOpened(true)} />
       <div className="content p-40">
         <div className="d-flex align-center mb-40 justify-between">
@@ -43,13 +48,13 @@ function App() {
           </div>
         </div>
         <div className="sneakers d-flex flex-wrap">
-          {items.map((obj) => (
+          {items.map((item) => (
             <Card
-              title={obj.name}
-              price={obj.price}
-              imageUrl={obj.imageUrl}
+              title={item.name}
+              price={item.price}
+              imageUrl={item.imageUrl}
               onFavorite={() => console.log("Нажали сердце")}
-              onPlus={() => console.log("Нажали плюс")}
+              onPlus={(obj) => onAddToCart(obj)}
             />
           ))}
         </div>
