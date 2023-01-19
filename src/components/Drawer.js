@@ -35,7 +35,10 @@ const Drawer = ({ onClose, onRemove, items = [] }) => {
           <div>
             <div className="items">
               {items.map((obj) => (
-                <div className="cartItem d-flex align-center mb-20 overflow-auto">
+                <div
+                  key={obj.id}
+                  className="cartItem d-flex align-center mb-20"
+                >
                   <div
                     style={{ backgroundImage: `url(${obj.imageUrl})` }}
                     className="cartItemImg"
@@ -78,7 +81,9 @@ const Drawer = ({ onClose, onRemove, items = [] }) => {
             <p className="opacity-6">
               Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.
             </p>
-            <button onClick={onClose} className="greenButton">Вернуться назад</button>
+            <button onClick={onClose} className="greenButton">
+              Вернуться назад
+            </button>
           </div>
         )}
       </div>
