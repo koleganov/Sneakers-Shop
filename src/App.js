@@ -19,27 +19,39 @@ function App() {
 
   React.useEffect(() => {
     async function fetchData() {
-      const cartResponse = await axios.get(API.CART);
-      const favoritesResponse = await axios.get(API.FAVORITES);
-      const itemsResponse = await axios.get(API.ITEMS);
+      try {
+        const [cartResponse, favoritesResponse, itemsResponse] =
+          await Promise.all([
+            axios.get(API.CART),
+            axios.get(API.FAVORITES),
+            axios.get(API.ITEMS),
+          ]);
 
-      setIsLoading(false);
+        setIsLoading(false);
 
-      setCartItems(cartResponse.data);
-      setFavorites(favoritesResponse.data);
-      setItems(itemsResponse.data);
+        setCartItems(cartResponse.data);
+        setFavorites(favoritesResponse.data);
+        setItems(itemsResponse.data);
+      } catch (error) {
+        alert("Ошибка при запросе данных");
+      }
     }
 
     fetchData();
   }, []);
 
-  const onAddToCart = (obj) => {
-    if (cartItems.find((item) => +item.id === +obj.id)) {
-      axios.delete(`${API.CART_DELETE}${obj.id}`);
-      setCartItems((prev) => prev.filter((item) => +item.id !== +obj.id));
-    } else {
-      axios.post(API.CART, obj);
-      setCartItems((prev) => [...prev, obj]);
+  const onAddToCart = async (obj) => {
+    try {
+      if (cartItems.find((item) => +item.id === +obj.id)) {
+        setCartItems((prev) => prev.filter((item) => +item.id !== +obj.id));
+        await axios.delete(`${API.CART_DELETE}${obj.id}`);
+      } else {
+        setCartItems((prev) => [...prev, obj]);
+        await axios.post(API.CART, obj);
+      }
+    } catch (error) {
+      alert("Ошибка при добавлении в корзину");
+      console.error(error);
     }
   };
 
@@ -54,12 +66,18 @@ function App() {
       }
     } catch (error) {
       alert("Не удалось добавить в избранное");
+      console.error(error);
     }
   };
 
   const onRemoveItem = (id) => {
-    axios.delete(`${API.CART_DELETE}${id}`);
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    try {
+      axios.delete(`${API.CART_DELETE}${id}`);
+      setCartItems((prev) => prev.filter((item) => item.id !== id));
+    } catch (error) {
+      alert("Ошибка при удалении из корзины");
+      console.error(error);
+    }
   };
 
   const onChangeSearchInput = (event) => {
@@ -84,13 +102,12 @@ function App() {
       }}
     >
       <div className="wrapper clear">
-        {cartOpened && (
-          <Drawer
-            items={cartItems}
-            onClose={() => setCartOpened(false)}
-            onRemove={onRemoveItem}
-          />
-        )}
+        <Drawer
+          items={cartItems}
+          onClose={() => setCartOpened(false)}
+          onRemove={onRemoveItem}
+          opened={cartOpened}
+        />
         <Header onClickCart={() => setCartOpened(true)} />
 
         <Routes>

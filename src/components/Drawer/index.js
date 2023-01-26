@@ -1,10 +1,14 @@
 import React from "react";
-import Info from "./info";
 import axios from "axios";
-import API from "../security";
-import { useCart } from "../hooks/useCart";
+import API from "../../security";
 
-const Drawer = ({ onClose, onRemove, items = [] }) => {
+import Info from "../info";
+import { useCart } from "../../hooks/useCart";
+
+import styles from "./Drawer.module.scss"
+
+
+const Drawer = ({ onClose, onRemove, items = [], opened }) => {
   const { cartItems, setCartItems, totalPrice } = useCart();
   const [orderId, setOrderId] = React.useState(null);
   const [isOrderComplete, setIsOrderComplete] = React.useState(false);
@@ -26,8 +30,8 @@ const Drawer = ({ onClose, onRemove, items = [] }) => {
   };
 
   return (
-    <div className="overlay">
-      <div className="drawer">
+    <div className={`${styles.overlay} ${opened ? styles.overlayVisible : ""}`}>
+      <div className={styles.drawer}>
         <h2 className="mb-40 d-flex justify-between">
           Корзина
           <img
@@ -40,7 +44,7 @@ const Drawer = ({ onClose, onRemove, items = [] }) => {
 
         {items.length > 0 ? (
           <div className="d-flex flex-column flex">
-            <div className="items">
+            <div className={styles.items}>
               {items.map((obj) => (
                 <div
                   key={obj.id}

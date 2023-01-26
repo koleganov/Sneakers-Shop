@@ -31,8 +31,6 @@ export const Orders = () => {
         {(isLoading ? [...Array(8)] : orders).map((item, index) => (
           <Card
             key={index}
-            onFavorite={(obj) => onAddToFavorite(obj)}
-            onPlus={(obj) => onAddToCart(obj)}
             loading={isLoading}
             {...item}
           />
